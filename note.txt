@@ -1,0 +1,6 @@
+CHATGPT_KEY: "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"
+HUGGINGFACE_KEY: "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"
+
+RUN CODE: terminal -> streamlit run streamlit_app.py -> nhập email -> thấy web
+
+HOST ONLINE: https://chatgptvideoproject-fpy6ty26q7rejthutshqn6.streamlit.app/
