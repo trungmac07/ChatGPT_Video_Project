@@ -1,4 +1,3 @@
-CHATGPT_KEY: "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"
 HUGGINGFACE_KEY: "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"
 
 RUN CODE: terminal -> streamlit run streamlit_app.py -> nhập email -> thấy web
