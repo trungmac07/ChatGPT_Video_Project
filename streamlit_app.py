@@ -2,27 +2,94 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+import chatgpt
+import asyncio
+import random
 
+import io
+from PIL import Image
+import chatgpt  # Assuming you have the chatgpt module installed
+import category
+
+
+st.set_page_config(layout="wide")
 st.title('Hello ChatGPT')
 
-DATE_COLUMN = 'date/time'
-DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
-         'streamlit-demo-data/uber-raw-data-sep14.csv.gz')
 
-@st.cache_data
-def load_data(nrows):
-    data = pd.read_csv(DATA_URL, nrows=nrows)
-    lowercase = lambda x: str(x).lower()
-    data.rename(lowercase, axis='columns', inplace=True)
-    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
-    return data
+if 'selections' not in st.session_state:
+    st.session_state.selections = dict()
 
-# Create a text element and let the reader know the data is loading.
-data_load_state = st.text('Loading data...')
-# Load 10,000 rows of data into the dataframe.
-data = load_data(10000)
-# Notify the reader that the data was successfully loaded.
-data_load_state.text('Loading data...done!')
-data_load_state.text("Done! (using st.cache_data)")
-st.subheader('Raw data')
-st.write(data)
+
+def add_selection(selection_list, key, value):
+    selection_list[key] = value
+    
+def remove_selection(selection_list, key):
+    if(key in selection_list):
+        selection_list.pop(key)
+
+def render_selection():
+    
+    st.write("Selected Values:")
+    if st.button("Clear"):
+        st.session_state.selections = dict()
+        st.session_state.counter = 0
+
+    ncols = 10
+    n = len(st.session_state.selections)
+
+    selectionsVN = list(st.session_state.selections.keys())
+    
+    nrows = n // ncols
+    nodds = n - nrows * ncols
+    
+    columns = st.columns(10)
+    
+    for i in range(nrows):
+        for j in range(ncols):
+            button_label = selectionsVN[i*ncols + j]
+            if columns[j].button(button_label, key = button_label+"selection", use_container_width=37):
+                remove_selection(st.session_state.selections, button_label)
+                st.experimental_rerun()
+
+    for i in range(nodds):
+        button_label = selectionsVN [nrows*ncols + i]
+        if columns[i].button(button_label, key = button_label+"selection", use_container_width=37):
+            remove_selection(st.session_state.selections, button_label)
+            st.experimental_rerun()
+            
+
+def render_selection_area():
+
+    category_names = list(category.categories.keys())
+    selection_box = st.selectbox("Selection", options=category_names)
+    categoryVN,categoryEN =  list(category.categories[selection_box].keys()) , list(category.categories[selection_box].values())
+    
+    n = len(categoryVN)
+    ncols = 7
+    nrows = n // ncols
+    nodds = n - nrows * ncols
+
+    columns = st.columns(ncols)
+    
+    for i in range(nrows):
+        for j in range(ncols):
+            button_label = categoryVN[i*ncols + j]
+            if columns[j].button(button_label, use_container_width=37):
+                add_selection(st.session_state.selections, categoryVN[i*ncols + j], categoryEN[i*ncols + j])
+                   
+
+    for i in range(nodds):
+        button_label = categoryVN[nrows*ncols + i]
+        if columns[i].button(button_label, use_container_width=37):
+            add_selection(st.session_state.selections, categoryVN[nrows*ncols + i], categoryEN[nrows*ncols + i])
+
+def render_ui():
+    if st.button("Create !"):
+        st.image(bot.create_image_from_selections(st.session_state.selections))
+        
+# Run the Streamlit app
+
+bot = chatgpt.ChatBot()
+render_selection_area()
+render_selection()
+render_ui()
