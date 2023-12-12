@@ -18,7 +18,8 @@ st.title('Hello ChatGPT')
 
 if 'selections' not in st.session_state:
     st.session_state.selections = dict()
-
+if 'image' not in st.session_state:
+    st.session_state.image = None
 
 def add_selection(selection_list, key, value):
     selection_list[key] = value
@@ -49,13 +50,13 @@ def render_selection():
             button_label = selectionsVN[i*ncols + j]
             if columns[j].button(button_label, key = button_label+"selection", use_container_width=37):
                 remove_selection(st.session_state.selections, button_label)
-                st.experimental_rerun()
+                st.rerun()
 
     for i in range(nodds):
         button_label = selectionsVN [nrows*ncols + i]
         if columns[i].button(button_label, key = button_label+"selection", use_container_width=37):
             remove_selection(st.session_state.selections, button_label)
-            st.experimental_rerun()
+            st.rerun()
             
 
 def render_selection_area():
@@ -84,8 +85,14 @@ def render_selection_area():
             add_selection(st.session_state.selections, categoryVN[nrows*ncols + i], categoryEN[nrows*ncols + i])
 
 def render_ui():
+
     if st.button("Create !"):
-        st.image(bot.create_image_from_selections(st.session_state.selections))
+        st.session_state.image = bot.create_image_from_selections(st.session_state.selections)
+        st.rerun()
+    
+    if (st.session_state.image):
+        st.write("YOUR IMAGE")
+        st.image(st.session_state.image)
         
 # Run the Streamlit app
 
