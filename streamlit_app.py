@@ -16,15 +16,15 @@ st.set_page_config(layout="wide")
 st.title(':blue[Joy Images]')
 
 import style
-button_create = style.button_create
-button_clear = style.button_clear
 
-
+st.markdown(style.button_create, unsafe_allow_html=True)
+st.markdown(style.button_clear, unsafe_allow_html=True)
 
 if 'selections' not in st.session_state:
     st.session_state.selections = dict()
 if 'image' not in st.session_state:
     st.session_state.image = None
+
 
 def add_selection(selection_list, key, value):
     selection_list[key] = value
@@ -102,7 +102,7 @@ def render_ui():
     if create_button:
         st.session_state.image = bot.create_image_from_selections(st.session_state.selections)
         if(st.session_state.image== None):
-            st.write(":red[Please select some contents first]")
+            st.write(":red[Hãy chọn một vài mục trước]")
         else:
             st.rerun()
 
