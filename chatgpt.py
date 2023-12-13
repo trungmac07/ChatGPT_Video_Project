@@ -36,7 +36,7 @@ class ChatBot:
 
     def create_image(self,prompt):
             
-            API_URL = "https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4"
+            API_URL = "https://api-inference.huggingface.co/models/prompthero/openjourney"
             headers = {"Authorization": f"Bearer {TOKEN}"}
 
             def query(payload):
@@ -59,6 +59,8 @@ class ChatBot:
 
 
     def create_image_from_selections(self, selections):
+        if(len(selections) == 0):
+            return None
         prompt = self.create_prompt(selections)
         image = self.create_image(prompt)
         print(prompt)

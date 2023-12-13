@@ -13,7 +13,12 @@ import category
 
 
 st.set_page_config(layout="wide")
-st.title('Hello ChatGPT')
+st.title(':blue[Joy Images]')
+
+import style
+button_create = style.button_create
+button_clear = style.button_clear
+
 
 
 if 'selections' not in st.session_state:
@@ -30,8 +35,10 @@ def remove_selection(selection_list, key):
 
 def render_selection():
     
-    st.write("Selected Values:")
-    if st.button("Clear"):
+    st.subheader(":blue[Các mục đã chọn:]")
+
+    st.markdown('<span id="button-clear"></span>', unsafe_allow_html=True)    
+    if st.button("Xóa tất cả"):
         st.session_state.selections = dict()
         st.session_state.counter = 0
 
@@ -43,7 +50,7 @@ def render_selection():
     nrows = n // ncols
     nodds = n - nrows * ncols
     
-    columns = st.columns(10)
+    columns = st.columns(7)
     
     for i in range(nrows):
         for j in range(ncols):
@@ -57,12 +64,14 @@ def render_selection():
         if columns[i].button(button_label, key = button_label+"selection", use_container_width=37):
             remove_selection(st.session_state.selections, button_label)
             st.rerun()
+    "---"
             
 
 def render_selection_area():
 
     category_names = list(category.categories.keys())
-    selection_box = st.selectbox("Selection", options=category_names)
+    st.subheader(":blue[Lựa Chọn Chủ Đề]")
+    selection_box = st.selectbox("Hãy lựa chọn chủ đề của bức ảnh", options=category_names)
     categoryVN,categoryEN =  list(category.categories[selection_box].keys()) , list(category.categories[selection_box].values())
     
     n = len(categoryVN)
@@ -84,19 +93,28 @@ def render_selection_area():
         if columns[i].button(button_label, use_container_width=37):
             add_selection(st.session_state.selections, categoryVN[nrows*ncols + i], categoryEN[nrows*ncols + i])
 
-def render_ui():
+    "---"
 
-    if st.button("Create !"):
+def render_ui():
+   
+    st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)    
+    create_button = st.button("Sáng Tạo Ảnh Ngay !")
+    if create_button:
         st.session_state.image = bot.create_image_from_selections(st.session_state.selections)
-        st.rerun()
-    
+        if(st.session_state.image== None):
+            st.write(":red[Please select some contents first]")
+        else:
+            st.rerun()
+
     if (st.session_state.image):
-        st.write("YOUR IMAGE")
+        st.write("Ảnh Của Bạn")
         st.image(st.session_state.image)
         
 # Run the Streamlit app
-
 bot = chatgpt.ChatBot()
 render_selection_area()
 render_selection()
 render_ui()
+
+
+# Display the styled button
