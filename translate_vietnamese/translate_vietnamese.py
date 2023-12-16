@@ -30,7 +30,7 @@ def getCommandLineArguments(default_error_log_path):
 
         args = sys.argv[1:]
 
-        for i,arg in enumerate(args):
+        for arg in args:
             if arg[0] == "-" and arg[1] == "-": # is a command
                 cmd = arg[2:].lower()
                 if "input" == cmd[0:5]:
@@ -128,7 +128,7 @@ try:
 except Exception as e:    
     error = str(e)
 
-    writeErrorLog(file_path=DEFAULT_ERROR_LOG_PATH, error=error)
+    writeErrorLog(file_path=error_log_path, error=error)
 
     try:
         if error_shm_name != "" and wait >= 0:
