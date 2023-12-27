@@ -1,15 +1,7 @@
 
 button_create = """
         <style>
-        .element-container:has(style){
-            display: none;
-        }
-        #button-create {
-            display: none;
-        }
-        .element-container:has(#button-create) {
-            display: none;
-        }
+        
         .element-container:has(#button-create) + div button {
         background-color: #1899D6;
         color: #ffffff;
@@ -33,7 +25,7 @@ button_create = """
         transition: filter .2s;
         -webkit-user-select: none;
         vertical-align: middle;
-        
+        width: 15%;
         }
         .element-container:has(#button-create) + div button:hover 
         {
@@ -47,15 +39,6 @@ button_create = """
 
 button_clear = """
                 <style>
-                .element-container:has(style){
-                    display: none;
-                }
-                #button-clear {
-                    display: none;
-                }
-                .element-container:has(#button-clear) {
-                    display: none;
-                }
                 .element-container:has(#button-clear) + div button {
                 background-color: #aa1111;
                 color: #ffffff;
@@ -79,7 +62,7 @@ button_clear = """
                 transition: filter .2s;
                 -webkit-user-select: none;
                 vertical-align: middle;
-                
+                width: 10%;
                 }
                 .element-container:has(#button-clear) + div button:hover 
                 {
@@ -92,4 +75,26 @@ button_clear = """
                 """
        
 
-
+button_selection = """
+                <style>
+            
+                .element-container:has(.button-selection) + div button{
+                background-color: #0055AA;
+                color: #ffffff;
+                border: solid transparent;
+                border-radius: 11px;
+                display: inline-block;
+                height: 50px;
+                width: 100%;
+                
+                }
+                
+                .element-container:has(.button-selection) + div button:hover 
+                {
+                    background-color: #31CCFF; 
+                    color: #000000;
+                    font-weight: 1500;
+                }
+     
+                </style>
+                """

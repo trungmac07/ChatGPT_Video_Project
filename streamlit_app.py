@@ -20,6 +20,8 @@ st.title(':blue[Joy Images]')
 
 st.markdown(style.button_create, unsafe_allow_html=True)
 st.markdown(style.button_clear, unsafe_allow_html=True)
+st.markdown(style.button_selection, unsafe_allow_html=True)
+
 
 if 'selections' not in st.session_state:
     st.session_state.selections = dict()
@@ -60,7 +62,7 @@ def render_selected():
         st.session_state.selections = dict()
         st.session_state.counter = 0
 
-    ncols = 10
+    ncols = 7
     n = len(st.session_state.selections)
 
     selectionsVN = list(st.session_state.selections.keys())
@@ -68,11 +70,12 @@ def render_selected():
     nrows = n // ncols
     nodds = n - nrows * ncols
     
-    columns = st.columns(7)
+    columns = st.columns(ncols)
     
     for i in range(nrows):
         for j in range(ncols):
             button_label = selectionsVN[i*ncols + j]
+            
             if columns[j].button(button_label, key = button_label+"selection", use_container_width=37):
                 remove_selection(st.session_state.selections, button_label)
                 st.rerun()
@@ -102,14 +105,18 @@ def render_selection_area():
     for i in range(nrows):
         for j in range(ncols):
             button_label = categoryVN[i*ncols + j]
-            if columns[j].button(button_label, use_container_width=37):
-                add_selection(st.session_state.selections, categoryVN[i*ncols + j], categoryEN[i*ncols + j])
+            with columns[j]:
+                st.markdown('''<span class = "button-selection"> </span>''', unsafe_allow_html=True)
+                if st.button(button_label, use_container_width=37):
+                    add_selection(st.session_state.selections, categoryVN[i*ncols + j], categoryEN[i*ncols + j])
                    
 
     for i in range(nodds):
         button_label = categoryVN[nrows*ncols + i]
-        if columns[i].button(button_label, use_container_width=37):
-            add_selection(st.session_state.selections, categoryVN[nrows*ncols + i], categoryEN[nrows*ncols + i])
+        with columns[i]:
+            st.markdown('''<span class = "button-selection"> </span>''', unsafe_allow_html=True)
+            if st.button(button_label, use_container_width=37):
+                add_selection(st.session_state.selections, categoryVN[nrows*ncols + i], categoryEN[nrows*ncols + i])
 
     "---"
 
