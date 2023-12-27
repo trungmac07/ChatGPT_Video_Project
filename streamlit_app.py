@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import pandas as pd
 import numpy as np
 
@@ -10,12 +11,12 @@ import io
 from PIL import Image
 import chatgpt  # Assuming you have the chatgpt module installed
 import category
-
+import style
 
 st.set_page_config(layout="wide")
 st.title(':blue[Joy Images]')
 
-import style
+
 
 st.markdown(style.button_create, unsafe_allow_html=True)
 st.markdown(style.button_clear, unsafe_allow_html=True)
@@ -25,6 +26,23 @@ if 'selections' not in st.session_state:
 if 'image' not in st.session_state:
     st.session_state.image = None
 
+################################################################################################################################
+
+# Display Menu 
+menu = None
+with st.sidebar:
+    menu = option_menu("Menu Sáng Tạo", ["Lựa Chọn Mục", "Giọng Nói", "Văn Bản"], icons=["list","mic-fill","type"],
+        styles={
+        "container": {"font-family" : "Tahoma"},
+        "nav-link": {"text-align": "left", "font-family" : "Tahoma", "--hover-color": "#60b4ff","font-size":"17px"},
+        "nav-link-selected": {"font-family" : "Tahoma", "font-size":"21px", "font-style" : "bold", "background" : "#60b4ff"},
+        },
+        menu_icon="three-dots", default_index=0)
+
+
+#####################################################################################################################################33
+
+#############################     AREA FOR CATEGORY     #####################################
 
 def add_selection(selection_list, key, value):
     selection_list[key] = value
@@ -33,7 +51,7 @@ def remove_selection(selection_list, key):
     if(key in selection_list):
         selection_list.pop(key)
 
-def render_selection():
+def render_selected():
     
     st.subheader(":blue[Các mục đã chọn:]")
 
@@ -95,8 +113,9 @@ def render_selection_area():
 
     "---"
 
-def render_ui():
-   
+def render_category_ui():
+    render_selection_area()
+    render_selected()
     st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)    
     create_button = st.button("Sáng Tạo Ảnh Ngay !")
     if create_button:
@@ -109,12 +128,51 @@ def render_ui():
     if (st.session_state.image):
         st.write("Ảnh Của Bạn")
         st.image(st.session_state.image)
-        
+
+
+
+#############################     AREA FOR VOICE     #####################################
+
+
+
+
+
+
+
+
+
+
+#############################     AREA FOR SCRIPT     #####################################
+
+
+
+
+
+
+
+
+
+
+
+
+#############################     APP RUNS     #####################################
+def select_tab(tab):
+    if(tab == "Lựa Chọn Mục"):
+        render_category_ui()
+
+    elif(tab == "Giọng Nói"):
+        pass
+    
+    elif(tab == "Văn Bản"):
+        pass
+
+    else:
+        return False
+
 # Run the Streamlit app
 bot = chatgpt.ChatBot()
-render_selection_area()
-render_selection()
-render_ui()
+select_tab(menu)
 
 
-# Display the styled button
+
+    
