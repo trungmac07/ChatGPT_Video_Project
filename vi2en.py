@@ -3,7 +3,7 @@ import subprocess
 import time
 
 class Vi2En():
-    def __init__(self, command=["translate_vietnamese/translate_vietnamese.exe", "--input=original_vietnamese", "--output=translated_vietnamese", "--wait=10", "--errorsharedmemory=translation_error", "--errorlog=translation_error_log.txt"]):
+    def __init__(self, command=["translate_vietnamese/translate_vietnamese.exe", "--input=original_vietnamese", "--output=translated_vietnamese", "--wait=5", "--errorsharedmemory=translation_error", "--errorlog=translation_error_log.txt"]):
         self.command = command
 
         self.input_path = ""
@@ -28,7 +28,7 @@ class Vi2En():
                 if "errorlog" == cmd[0:8]:
                     self.error_log_path = cmd[9:]
 
-    def translateVi2En(self, text, timeout=10):
+    def translateVi2En(self, text, timeout=15):
         translated_text = ""
         error_text = ""
         shm_list = []
@@ -47,7 +47,7 @@ class Vi2En():
 
         while True:
             if time.time() - start_time >= timeout:
-                raise TimeoutException(f"Processing time exceeds {timeout}.")
+                raise Exception(f"Processing time has exceeded {timeout}.")
             else:
                 try:
                     tv_shm = shared_memory.SharedMemory(name=self.output_path)
@@ -61,6 +61,8 @@ class Vi2En():
                     try:
                         e_shm = shared_memory.SharedMemory(name=self.error_shm_name)
                         error_text = e_shm.buf.tobytes().decode('utf-8')
+
+                        error_text = error_text.rstrip('\x00')
 
                         shm_list.append(e_shm)
 
