@@ -20,7 +20,6 @@ categories = {
         'Quê hương': 'Homeland',
         'Đàn gia cầm': 'Poultry flock',
         'Ngôi nhà tranh': 'Thatched house',
-        'Nhà nông truyền thống': 'Traditional farmhouse'
     },
 
     "Phong Cảnh" : {
@@ -120,7 +119,7 @@ categories = {
 
     "Rừng Rậm" :{
         'Rừng cây cao': 'Tall trees forest',
-        'Dòng sông trong rừng': 'River in the forest',
+        'Dòng sông': 'River',
         'Rừng thông': 'Pine forest',
         'Rừng mưa nhiệt đới': 'Tropical rainforest',
         'Ngọn núi': 'Mountain',
