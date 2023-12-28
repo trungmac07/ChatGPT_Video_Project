@@ -16,6 +16,9 @@ import chatgpt  # Assuming you have the chatgpt module installed
 import category
 import style
 
+import vi2en
+import speech_recognition as sr
+
 st.set_page_config(layout="wide")
 st.title(':blue[Joy Images]')
 
@@ -36,6 +39,10 @@ if 'selections' not in st.session_state:
     st.session_state.selections = dict()
 if 'image' not in st.session_state:
     st.session_state.image = None
+if 'srt' not in st.session_state:
+    st.session_state.srt = None
+if 'speech' not in st.session_state:
+    st.session_state.speech = None
 
 ################################################################################################################################
 
@@ -171,25 +178,86 @@ def render_category_ui():
 
 #############################     AREA FOR VOICE     #####################################
 
-
-
-
-
-
-
+def render_voice_ui():
+    st.subheader(":blue[Vẽ Qua Lời Nói]")
+    
+    isRecording = False
+    
+    st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)
+    record_btn = st.button("Thu âm")    
+    if record_btn:
+        with st.spinner('Đang thu âm...'):
+            with sr.Microphone() as source:
+                isRecording = True
+                st.spinner("Đang thu âm...")
+                try:
+                    audio_data = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+                except Exception as e:
+                    audio_data = None
+                
+            try:
+                st.spinner("Đang nhận diện...")
+                st.session_state.speech = recognizer.recognize_google(audio_data, language="vi-VN")  # Specify the language as Vietnamese
+            except Exception as e:
+                st.session_state.speech = None
+                st.write("Không nhận diện được giọng nói")
+            
+            isRecording = False
+                
+    if not isRecording and st.session_state.speech:
+        st.subheader(":blue[Chỉnh sửa mô tả]")
+        st.session_state.speech = st.text_area("Chỉnh sửa mô tả của bạn:", value=st.session_state.speech)
+             
+    st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)   
+    create_btn = st.button("Sáng Tạo Ảnh Ngay!")    
+    if not isRecording and create_btn:
+        with st.spinner('Chờ xíu nhé...'):
+            st.session_state.speech = st.session_state.speech.strip()
+            if len(st.session_state.speech) > 0:
+                st.spinner('Đang dịch lời nói...')
+                success, translated_srt, error_msg = v2e.translateVi2En(st.session_state.speech)
+                if success:
+                    st.spinner('Đang tạo ảnh từ lời nói...')
+                    st.session_state.image = bot.create_image_from_script(translated_srt)
+                else:
+                    st.write(f":red[{error_msg}]")
+            else:
+                st.write(":red[Hãy mô tả bức tranh của bạn trước]")
+                st.session_state.image = None
+                
+    if st.session_state.image:
+        st.write("Ảnh Của Bạn")
+        st.image(st.session_state.image)
 
 
 
 #############################     AREA FOR SCRIPT     #####################################
 
+def render_script_ui():
+    st.subheader(":blue[Vẽ Qua Lời Văn]")
+    st.session_state.srt = st.text_area("Hãy mô tả bức tranh của bạn:", value=st.session_state.srt)
+    
+    st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)
+    submit_button = st.button("Sáng Tạo Ảnh Ngay!")
 
-
-
-
-
-
-
-
+    if submit_button:
+        with st.spinner('Chờ xíu nhé...'):
+            st.session_state.srt = st.session_state.srt.strip()
+            if len(st.session_state.srt) > 0:
+                st.spinner('Đang dịch văn bản...')
+                success, translated_srt, error_msg = v2e.translateVi2En(st.session_state.srt)
+                if success:
+                    st.spinner('Đang tạo ảnh từ văn bản...')
+                    st.session_state.image = bot.create_image_from_script(translated_srt)
+                else:
+                    st.write(f":red[{error_msg}]")
+            else:
+                st.write(":red[Hãy mô tả bức tranh của bạn trước]")
+                st.session_state.image = None
+        
+    if st.session_state.image:
+        st.write("Ảnh Của Bạn")
+        st.image(st.session_state.image)
 
 
 
@@ -199,15 +267,17 @@ def select_tab(tab):
         render_category_ui()
 
     elif(tab == "Giọng Nói"):
-        pass
+        render_voice_ui()
     
     elif(tab == "Văn Bản"):
-        pass
+        render_script_ui()
 
     else:
         return False
 
 # Run the Streamlit app
 bot = chatgpt.ChatBot()
+v2e = vi2en.Vi2En()
+recognizer = sr.Recognizer()
 select_tab(menu)
 

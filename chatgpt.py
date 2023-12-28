@@ -67,4 +67,8 @@ class ChatBot:
         
         return image 
 
+    def create_image_from_script(self, script):
+        prompt = self.query(script)
+        image = self.create_image(prompt)
         
+        return image
