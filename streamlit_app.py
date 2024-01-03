@@ -231,10 +231,10 @@ def render_voice_ui(max_retries=5):
             if len(st.session_state.speech) > 0:
                 st.spinner('Đang dịch lời nói...')
                 success, translated_srt, error_msg = v2e.translateVi2En(st.session_state.speech)
-                st.spinner('Đang hỗ trợ bằng AI')
-                ai_script = bot.support_script(translated_srt)
-                print(ai_script)
                 if success:
+                    st.spinner('Đang hỗ trợ bằng AI')
+                    ai_script = bot.support_script(translated_srt)
+                    print(ai_script)
                     st.spinner('Đang tạo ảnh từ lời nói...')
                     st.session_state.image = bot.create_image_from_script(ai_script)
                 else:
@@ -289,11 +289,13 @@ def render_script_ui(max_retries=5):
         with st.spinner('Chờ xíu nhé...'):
             st.session_state.srt = st.session_state.srt.strip()
             if len(st.session_state.srt) > 0:
-                st.spinner('Đang dịch văn bản...')
+                st.spinner('Đang dịch lời nói...')
                 success, translated_srt, error_msg = v2e.translateVi2En(st.session_state.srt)
                 if success:
-                    st.spinner('Đang tạo ảnh từ văn bản...')
+                    st.spinner('Đang hỗ trợ bằng AI')
                     ai_script = bot.support_script(translated_srt)
+                    print(ai_script)
+                    st.spinner('Đang tạo ảnh từ lời nói...')
                     st.session_state.image = bot.create_image_from_script(ai_script)
                 else:
                     st.write(f":red[{error_msg}]")
