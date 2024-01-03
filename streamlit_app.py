@@ -158,7 +158,7 @@ def render_selection_area():
 
     "---"
 
-def render_category_ui():
+def render_category_ui(max_retries=5):
     render_selection_area()
     render_selected()
     
@@ -176,13 +176,21 @@ def render_category_ui():
     if (st.session_state.image):
         
         st.write("Ảnh Của Bạn")
-        st.image(st.session_state.image)
+        
+        for i in range(max_retries):
+            try:
+                st.image(st.session_state.image)
+                break
+            except Exception as e:
+                continue
+        else:
+            st.write(":red[Lỗi hiển thị ảnh]")
 
 
 
 #############################     AREA FOR VOICE     #####################################
 
-def render_voice_ui():
+def render_voice_ui(max_retries=5):
     st.header(":blue[Vẽ Qua Lời Nói]")
     
     isRecording = False
@@ -255,13 +263,21 @@ def render_voice_ui():
                 
     if st.session_state.image:
         st.write("Ảnh Của Bạn")
-        st.image(st.session_state.image)
+        
+        for i in range(max_retries):
+            try:
+                st.image(st.session_state.image)
+                break
+            except Exception as e:
+                continue
+        else:
+            st.write(":red[Lỗi hiển thị ảnh]")
 
 
 
 #############################     AREA FOR SCRIPT     #####################################
 
-def render_script_ui():
+def render_script_ui(max_retries=5):
     st.header(":blue[Vẽ Qua Lời Văn]")
     st.session_state.srt = st.text_area("Hãy mô tả bức tranh của bạn:", value=st.session_state.srt)
     
@@ -306,7 +322,15 @@ def render_script_ui():
         
     if st.session_state.image:
         st.write("Ảnh Của Bạn")
-        st.image(st.session_state.image)
+        
+        for i in range(max_retries):
+            try:
+                st.image(st.session_state.image)
+                break
+            except Exception as e:
+                continue
+        else:
+            st.write(":red[Lỗi hiển thị ảnh]")
 
 
 
