@@ -216,6 +216,7 @@ def render_voice_ui():
     
     st.markdown('<span id="button-support" class = "text-l"></span>', unsafe_allow_html=True)   
     ai_sp = st.button("Hỗ trợ bằng AI")
+    st.write("AI sẽ giúp bạn làm đoạn yêu cầu của bạn hay hơn từ đó sẽ giúp tạo ra ảnh đẹp hơn.")
     if not isRecording and ai_sp:
         with st.spinner('Chờ xíu nhé...'):
             st.session_state.speech = st.session_state.speech.strip()
@@ -267,6 +268,7 @@ def render_script_ui():
     
     st.markdown('<span id="button-support" class = "text-l"></span>', unsafe_allow_html=True)   
     ai_sp = st.button("Hỗ trợ bằng AI")
+    st.write("AI sẽ giúp bạn làm đoạn yêu cầu của bạn hay hơn từ đó sẽ giúp tạo ra ảnh đẹp hơn.")
     if ai_sp:
         with st.spinner('Chờ xíu nhé...'):
             st.session_state.srt = st.session_state.srt.strip()
