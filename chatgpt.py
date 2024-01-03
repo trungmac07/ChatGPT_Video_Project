@@ -48,7 +48,7 @@ class ChatBot:
             return io.BytesIO(image_bytes)
 
     def create_prompt(self, selections):
-        prompt = "Generate for me a short one-sentence prompt using simple words for AI to create a image having "
+        prompt = "Generate for me a short one-sentence prompt for AI to create a image having "
         for vn,en in selections.items():
             prompt += (en + ", ")
         prompt = prompt[:-2]
@@ -72,3 +72,12 @@ class ChatBot:
         image = self.create_image(prompt)
         
         return image
+    
+    def support_script(self, script):
+        prompt = "Paraphrase this script to a short one-sentence prompt for AI to generate for me a image: "
+        prompt += script
+        prompt = self.query(prompt)
+        #prompt += " in " + mode + " mode"
+        print(prompt)
+        return prompt
+    

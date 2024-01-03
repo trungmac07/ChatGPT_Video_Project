@@ -37,6 +37,9 @@ button_create = """
 
 button_clear = """
                 <style>
+                    .element-container:has(#button-clear) + div {
+                        text-align: right;
+                    }
                     .element-container:has(#button-clear) + div button {
                     background-color: #aa1111;
                     color: #ffffff;
@@ -52,9 +55,10 @@ button_clear = """
                     overflow: visible;
                     padding: 7;
                     text-align: center;
-    
+                    
                     touch-action: manipulation;
                     vertical-align: middle;
+                    
 
                     width: 11%;
                     height: 50px;
@@ -234,3 +238,40 @@ text_xl = """
         </style>
 
 """
+
+
+button_support = """
+        <style>
+        
+            .element-container:has(#button-support) + div button {
+            background-color: #179917;
+            color: #ffffff;
+            border: solid transparent;
+            border-radius: 15px;
+            border-width: 0 0 4px;
+            box-sizing: border-box;
+            display: inline-block;
+            letter-spacing: .8px;
+            line-height: 20px;
+            margin: 0;
+            outline: none;
+            overflow: visible;
+            padding: 13px 16px;
+            text-align: center;
+            height: 77px;
+            width: 25%;
+            }
+
+            .element-container:has(#button-support) + div button p{
+                font-size: 27px
+            }
+
+
+            .element-container:has(#button-support) + div button:hover 
+            {
+                background-color: #11ee11; 
+                color: #000000;
+                
+            }
+        </style>
+        """

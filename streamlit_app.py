@@ -22,16 +22,17 @@ import speech_recognition as sr
 st.set_page_config(layout="wide")
 st.title(':blue[Joy Images]')
 
-
-
 st.markdown(style.button_create             , unsafe_allow_html=True)
 st.markdown(style.button_clear              , unsafe_allow_html=True)
 st.markdown(style.button_selection_disabled , unsafe_allow_html=True)
 st.markdown(style.button_selection_enabled  , unsafe_allow_html=True)
 st.markdown(style.button_selected           , unsafe_allow_html=True)
+st.markdown(style.button_support           , unsafe_allow_html=True)
 st.markdown(style.text_m                    , unsafe_allow_html=True)
 st.markdown(style.text_l                    , unsafe_allow_html=True)
 st.markdown(style.text_xl                   , unsafe_allow_html=True)
+
+
 
 
 
@@ -74,10 +75,6 @@ def render_selected():
     
     st.subheader(":red[Các mục đã chọn:]")
     
-    st.markdown('<span id="button-clear"></span>', unsafe_allow_html=True)    
-    if st.button("Xóa tất cả"):
-        st.session_state.selections = dict()
-        st.session_state.counter = 0
 
     ncols = 7
     n = len(st.session_state.selections)
@@ -105,6 +102,13 @@ def render_selected():
             if st.button(button_label, key = button_label+"selection", use_container_width=37):
                 remove_selection(st.session_state.selections, button_label)
                 st.rerun()
+    
+    st.markdown('<span id="button-clear"></span>', unsafe_allow_html=True)    
+    if st.button("Xóa tất cả"):
+        st.session_state.selections = dict()
+        st.session_state.counter = 0
+        st.rerun()
+    
     "---"
             
 
@@ -161,7 +165,7 @@ def render_category_ui():
     st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)    
     create_button = st.button("Sáng Tạo Ảnh Ngay !")
     if create_button:
-        with st.spinner('Wait for it...'):
+        with st.spinner('Chờ xíu nhé...'):
             st.session_state.image = bot.create_image_from_selections(st.session_state.selections)
             
         if(st.session_state.image == None):
@@ -179,7 +183,7 @@ def render_category_ui():
 #############################     AREA FOR VOICE     #####################################
 
 def render_voice_ui():
-    st.subheader(":blue[Vẽ Qua Lời Nói]")
+    st.header(":blue[Vẽ Qua Lời Nói]")
     
     isRecording = False
     
@@ -208,8 +212,31 @@ def render_voice_ui():
         st.subheader(":blue[Chỉnh sửa mô tả]")
         st.session_state.speech = st.text_area("Chỉnh sửa mô tả của bạn:", value=st.session_state.speech)
              
+    
+    
+    st.markdown('<span id="button-support" class = "text-l"></span>', unsafe_allow_html=True)   
+    ai_sp = st.button("Hỗ trợ bằng AI")
+    if not isRecording and ai_sp:
+        with st.spinner('Chờ xíu nhé...'):
+            st.session_state.speech = st.session_state.speech.strip()
+            if len(st.session_state.speech) > 0:
+                st.spinner('Đang dịch lời nói...')
+                success, translated_srt, error_msg = v2e.translateVi2En(st.session_state.speech)
+                st.spinner('Đang hỗ trợ bằng AI')
+                ai_script = bot.support_script(translated_srt)
+                print(ai_script)
+                if success:
+                    st.spinner('Đang tạo ảnh từ lời nói...')
+                    st.session_state.image = bot.create_image_from_script(ai_script)
+                else:
+                    st.write(f":red[{error_msg}]")
+            else:
+                st.write(":red[Hãy mô tả bức tranh của bạn trước]")
+                st.session_state.image = None
+       
+
     st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)   
-    create_btn = st.button("Sáng Tạo Ảnh Ngay!")    
+    create_btn = st.button("Sáng Tạo Ảnh Ngay!")
     if not isRecording and create_btn:
         with st.spinner('Chờ xíu nhé...'):
             st.session_state.speech = st.session_state.speech.strip()
@@ -234,8 +261,28 @@ def render_voice_ui():
 #############################     AREA FOR SCRIPT     #####################################
 
 def render_script_ui():
-    st.subheader(":blue[Vẽ Qua Lời Văn]")
+    st.header(":blue[Vẽ Qua Lời Văn]")
     st.session_state.srt = st.text_area("Hãy mô tả bức tranh của bạn:", value=st.session_state.srt)
+    
+    
+    st.markdown('<span id="button-support" class = "text-l"></span>', unsafe_allow_html=True)   
+    ai_sp = st.button("Hỗ trợ bằng AI")
+    if ai_sp:
+        with st.spinner('Chờ xíu nhé...'):
+            st.session_state.srt = st.session_state.srt.strip()
+            if len(st.session_state.srt) > 0:
+                st.spinner('Đang dịch văn bản...')
+                success, translated_srt, error_msg = v2e.translateVi2En(st.session_state.srt)
+                if success:
+                    st.spinner('Đang tạo ảnh từ văn bản...')
+                    ai_script = bot.support_script(translated_srt)
+                    st.session_state.image = bot.create_image_from_script(ai_script)
+                else:
+                    st.write(f":red[{error_msg}]")
+            else:
+                st.write(":red[Hãy mô tả bức tranh của bạn trước]")
+                st.session_state.image = None
+    
     
     st.markdown('<span id="button-create"></span>', unsafe_allow_html=True)
     submit_button = st.button("Sáng Tạo Ảnh Ngay!")
