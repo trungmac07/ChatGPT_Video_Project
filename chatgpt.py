@@ -39,14 +39,16 @@ class ChatBot:
             API_URL = "https://api-inference.huggingface.co/models/prompthero/openjourney"
             headers = {"Authorization": f"Bearer {TOKEN}"}
 
-            def query(payload):
+            def query_huggingface(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.content
-            image_bytes = query({
-                "inputs": prompt,
+            
+            image_bytes = query_huggingface({
+                "inputs": prompt
             })
-            return io.BytesIO(image_bytes)
-
+            res = io.BytesIO(image_bytes)
+            return res
+    
     def create_prompt(self, selections):
         prompt = "Generate for me a short one-sentence prompt for AI to create a image having "
         for vn,en in selections.items():
@@ -74,7 +76,9 @@ class ChatBot:
         return image
     
     def support_script(self, script):
-        prompt = "Paraphrase this script to a short one-sentence prompt for AI to generate for me a image: "
+        if (script is not str):
+            return ""
+        prompt = "One-sentence prompt for AI to generate for me a image from this content: "
         prompt += script
         prompt = self.query(prompt)
         #prompt += " in " + mode + " mode"
